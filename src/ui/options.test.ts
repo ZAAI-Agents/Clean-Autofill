@@ -791,6 +791,36 @@ describe('options page integration', () => {
     );
   });
 
+  test('allows plus addressing with a warning for icloud.com full emails', async () => {
+    mockStorage.emailMode = 'catchAll';
+    mockStorage.emailDomain = 'gmail.com';
+    mockStorage.baseEmail = 'user@gmail.com';
+
+    await initOptionsPage();
+    const { input, colPlus, colCatch, radioPlus, radioCatch, modeFeedback } = getOptionsElements();
+
+    input.value = 'abc@icloud.com';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(colPlus.classList.contains('disabled')).toBe(false);
+    expect(colCatch.classList.contains('disabled')).toBe(true);
+    expect(modeFeedback.textContent).toBe(
+      "Apple doesn't officially document plus addressing; name+tag@icloud.com delivers in practice.",
+    );
+    expect(modeFeedback.classList.contains('feedback-warning')).toBe(true);
+
+    colPlus.click();
+
+    expect(radioPlus.checked).toBe(true);
+    expect(radioCatch.checked).toBe(false);
+
+    await waitForDebounce();
+
+    expect(mockStorage.emailMode).toBe('plusAddressing');
+    expect(mockStorage.emailDomain).toBe('icloud.com');
+    expect(mockStorage.baseEmail).toBe('abc@icloud.com');
+  });
+
   test('supported public-provider emails recover to the previous mode and clear the warning slot', async () => {
     mockStorage.emailMode = 'plusAddressing';
     mockStorage.emailDomain = 'gmail.com';

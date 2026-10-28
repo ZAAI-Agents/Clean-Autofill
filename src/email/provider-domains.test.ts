@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'bun:test';
-import { PLUS_SUPPORTED_DOMAINS, PLUS_UNSUPPORTED_DOMAINS } from './provider-domains.js';
+import {
+  ICLOUD_STATIC_DOMAINS,
+  PLUS_SUPPORTED_DOMAINS,
+  PLUS_UNSUPPORTED_DOMAINS,
+} from './provider-domains.js';
 
 describe('PLUS_SUPPORTED_DOMAINS', () => {
   test('is non-empty', () => {
@@ -31,6 +35,18 @@ describe('PLUS_SUPPORTED_DOMAINS', () => {
   test('no empty strings', () => {
     for (const domain of PLUS_SUPPORTED_DOMAINS) {
       expect(domain.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('ICLOUD_STATIC_DOMAINS', () => {
+  test('contains all iCloud static domains', () => {
+    expect([...ICLOUD_STATIC_DOMAINS].sort()).toEqual(['icloud.com', 'mac.com', 'me.com']);
+  });
+
+  test('stays disjoint from PLUS_SUPPORTED_DOMAINS', () => {
+    for (const domain of ICLOUD_STATIC_DOMAINS) {
+      expect(PLUS_SUPPORTED_DOMAINS.has(domain)).toBe(false);
     }
   });
 });

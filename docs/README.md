@@ -60,7 +60,7 @@ Clean Autofill supports two modes. Provider compatibility determines which mode 
 | Google Workspace | ✅* | ✅ |
 | Gmail | ✅ | - |
 | Outlook / Hotmail / Live | ✅ | - |
-| Apple iCloud | ❌ | - |
+| Apple iCloud | ⚠️¹ | - |
 | Yahoo / Ymail | ❌ | - |
 | ProtonMail | ✅ | - |
 | GMX / web.de | ❌ | - |
@@ -70,6 +70,8 @@ Clean Autofill supports two modes. Provider compatibility determines which mode 
 | mailbox.org | ✅ | - |
 
 \*If your email host supports plus addressing. Outlook.com consumer accounts commonly work with `+tag` but Microsoft's official plus-addressing docs are for Exchange Online. Zoho Mail is unverified.
+
+¹Apple iCloud: plus addressing delivers in practice (`name+tag@icloud.com`) even though Apple doesn't document it — Plus Addressing can be selected manually with a warning. Yahoo: generated tag addresses won't deliver (Yahoo requires pre-created disposable addresses), so plus mode stays unsupported.
 
 See [Email Provider Details](Email-Provider.md) for the full decision table and provider notes.
 

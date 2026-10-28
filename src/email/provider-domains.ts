@@ -152,6 +152,9 @@ export const PLUS_SUPPORTED_DOMAINS = new Set([
   'ya.ru',
 ]);
 
+// iCloud static domains: Apple does not document plus addressing, but name+tag delivers in practice
+export const ICLOUD_STATIC_DOMAINS = new Set(['icloud.com', 'me.com', 'mac.com']);
+
 // Providers that do NOT support classic plus addressing
 export const PLUS_UNSUPPORTED_DOMAINS = new Set([
   // Yahoo Mail

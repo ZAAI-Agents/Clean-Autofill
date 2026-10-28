@@ -77,7 +77,7 @@ This table shows which modes are available based on what you enter in the extens
 | `name@hey.com` | ✅ | ❌ | Hey supports `+` |
 | `name@yahoo.com` | ⚠️ | ❌ | Yahoo doesn't support `+` |
 | `name@gmx.com` | ⚠️ | ❌ | GMX doesn't support `+` |
-| `name@icloud.com` | ⚠️ | ❌ | iCloud doesn't support `+` |
+| `name@icloud.com` | ⚠️¹ | ❌ | Apple doesn't document `+`, but `name+tag@icloud.com` delivers in practice — Plus Addressing is selectable with a warning¹ |
 | `name@mail.com` | ⚠️ | ❌ | mail.com doesn't support `+` |
 | `name@web.de` | ⚠️ | ❌ | web.de doesn't support `+` |
 | `name@t-online.de` | ⚠️ | ❌ | T-Online doesn't support `+` |
@@ -109,6 +109,6 @@ Gmail ignores dots in the local part: `f.i.r.s.t.l.a.s.t@gmail.com` is the same 
 The extension maintains two lists of known email provider domains in `src/email/provider-domains.ts`. When you enter your email address:
 
 1. If the domain matches a **known provider that supports `+`** (Gmail, Outlook, Proton, Fastmail, mailbox.org, Hey) the Plus Addressing column is available and Catch-All is disabled
-2. If the domain matches a **known provider without `+` support** (Yahoo, GMX, iCloud, mail.com, web.de, T-Online, Tuta) the Plus Addressing column shows a warning and Catch-All is disabled
+2. If the domain matches a **known provider without `+` support** (Yahoo, GMX, mail.com, web.de, T-Online, Tuta) the Plus Addressing column shows a warning and Catch-All is disabled — iCloud (`icloud.com`, `me.com`, `mac.com`) is treated the same way except that Plus Addressing remains selectable with a warning, because Apple doesn't officially document plus addressing but `name+tag@icloud.com` delivers in practice
 3. If the domain is **not recognized** it is treated as a custom domain and both modes are available
 4. If **no `@` is present** (just a domain) only Catch-All is available

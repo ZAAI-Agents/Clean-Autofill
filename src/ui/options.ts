@@ -1,5 +1,6 @@
 import { getAllCatchAllInstructions } from '../email/catch-all-instructions.js';
 import { getProviderInfo } from '../email/mx-lookup.js';
+import { ICLOUD_STATIC_DOMAINS } from '../email/provider-domains.js';
 import type { ProviderStatus } from '../email/providers.js';
 import {
   domainRegex,
@@ -41,6 +42,8 @@ const FEEDBACK_MESSAGES = {
     'This provider does not support Plus-Addressing. Catch-All mode requires a custom domain.',
   catchAllRequiresCustomDomain: 'Catch-All mode requires a custom domain you own.',
   unsupportedPlusAddressing: 'This email provider does not support Plus-Addressing.',
+  icloudPlusNotDocumented:
+    "Apple doesn't officially document plus addressing; name+tag@icloud.com delivers in practice.",
   possiblyUnsupportedPlusAddressing: 'This email provider likely does not support Plus-Addressing.',
   enterEmailOrDomain: 'Enter your email or domain above.',
   enterValidEmailOrDomain: 'Enter a valid email or domain.',
@@ -448,7 +451,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   ): { plus: boolean; catchAll: boolean } {
     const isKnownProvider = getProviderStatus(domain) !== 'custom';
     return {
-      plus: isKnownProvider && finalStatus === 'plus-unsupported',
+      plus:
+        isKnownProvider && finalStatus === 'plus-unsupported' && !ICLOUD_STATIC_DOMAINS.has(domain),
       catchAll: isKnownProvider,
     };
   }
@@ -746,12 +750,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Feedback bar
     if (status === 'plus-unsupported') {
-      setFeedback(
-        'warning',
-        syncStatus !== 'custom'
-          ? FEEDBACK_MESSAGES.unsupportedPlusAddressing
-          : FEEDBACK_MESSAGES.possiblyUnsupportedPlusAddressing,
-      );
+      if (syncStatus !== 'custom') {
+        setFeedback(
+          'warning',
+          ICLOUD_STATIC_DOMAINS.has(domain)
+            ? FEEDBACK_MESSAGES.icloudPlusNotDocumented
+            : FEEDBACK_MESSAGES.unsupportedPlusAddressing,
+        );
+      } else {
+        setFeedback('warning', FEEDBACK_MESSAGES.possiblyUnsupportedPlusAddressing);
+      }
     } else if (disabled.catchAll) {
       setFeedback('info', FEEDBACK_MESSAGES.catchAllRequiresCustomDomain);
     } else {
@@ -813,6 +821,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       restorePreferredModeSelection();
       if (disabled.plus && disabled.catchAll) {
         setFeedback('warning', FEEDBACK_MESSAGES.unsupportedProvider);
+      } else if (
+        disabled.catchAll &&
+        syncStatus === 'plus-unsupported' &&
+        ICLOUD_STATIC_DOMAINS.has(state.domain as string)
+      ) {
+        setFeedback('warning', FEEDBACK_MESSAGES.icloudPlusNotDocumented);
       } else if (disabled.catchAll) {
         setFeedback('info', FEEDBACK_MESSAGES.catchAllRequiresCustomDomain);
       } else {
